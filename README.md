@@ -1,105 +1,100 @@
-# Email Classifier
+# Privacy-Aware Email Classification API
 
-A machine learning system that classifies support emails into predefined categories, with built-in PII (Personally Identifiable Information) masking to protect sensitive data before processing.
+A Python machine-learning service that classifies support emails into predefined categories while masking personally identifiable information (PII) before classification and processing.
 
-## Overview
+## Project Summary
 
-This project automatically categorizes incoming support emails (e.g., Billing, Technical Issue, Account Request, General Inquiry) using a trained machine learning model. Before classification, any personal information present in the email — such as names, email addresses, and phone numbers — is masked to ensure sensitive data is not exposed during processing or logging.
+The project separates the workflow into PII masking, model inference, model training, and an API layer. It is designed for support-email automation where sensitive information should be removed before text is processed by the classifier.
 
-## Features
+## Main Features
 
-- **PII Masking** — Automatically detects and masks sensitive information (names, emails, phone numbers, etc.) from email text before classification.
-- **ML-based Classification** — Uses a trained model to predict the correct category for a given email.
-- **REST API** — Exposes an endpoint to classify new emails on demand.
-- **Model Training Pipeline** — Includes a script to train the classifier on your own labeled dataset.
+- PII masking for email text
+- Machine-learning based email classification
+- Model training pipeline
+- FastAPI service for classification requests
+- JSON API responses
+
+## Technology Stack
+
+- Python
+- FastAPI
+- Uvicorn
+- Scikit-learn
+- Pandas
+- Joblib
 
 ## Project Structure
 
-```
-email_classifier/
-├── app.py               # Entry point — runs the API/service
-├── classification.py    # Core logic for classifying emails using the trained model
-├── masking.py           # PII detection and masking logic
-├── train_model.py       # Script to train and save the ML model
-├── requirements.txt     # Python dependencies
+```text
+.
+├── app.py
+├── classification.py
+├── masking.py
+├── train_model.py
+├── requirements.txt
 └── README.md
 ```
 
-## Installation
+## Workflow
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Sachinn0704/email_classifier.git
-   cd email_classifier
-   ```
+1. Receive email text through the application/API.
+2. Detect sensitive information using the masking module.
+3. Replace detected PII with safe placeholder values.
+4. Pass the sanitized text to the trained classifier.
+5. Return the predicted support category.
 
-2. Create and activate a virtual environment (recommended):
-   ```bash
-   python -m venv venv
-   source venv/bin/activate   # On Windows: venv\Scripts\activate
-   ```
+## Setup
 
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 1. Create a virtual environment
 
-## Usage
+```bash
+python -m venv venv
+```
 
-### 1. Train the model
-Train the classifier on your dataset:
+Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+Linux/macOS:
+
+```bash
+source venv/bin/activate
+```
+
+### 2. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Train the model
+
 ```bash
 python train_model.py
 ```
-This will process the training data and save the trained model for later use in classification.
 
-### 2. Run the application
-Start the app to classify emails:
+### 4. Start the API
+
 ```bash
-python app.py
+uvicorn app:app --reload
 ```
 
-### 3. Classify an email
-Send an email's text to the classification endpoint (adjust based on your actual API route):
-```bash
-curl -X POST http://localhost:5000/classify \
-  -H "Content-Type: application/json" \
-  -d '{"email_text": "Hi, I was charged twice for my last invoice."}'
-```
+The exact API route and request schema should be taken from `app.py` because they are defined by the implementation.
 
-Example response:
-```json
-{
-  "masked_text": "Hi, I was charged twice for my last invoice.",
-  "predicted_category": "Billing Issue"
-}
-```
+## Key Learning Outcomes
 
-## How It Works
-
-1. **Input** — A raw email (subject + body) is received.
-2. **Masking** — `masking.py` scans the text and replaces any PII (names, emails, phone numbers) with placeholder tokens.
-3. **Classification** — `classification.py` loads the trained model and predicts the most likely category for the masked email.
-4. **Output** — The predicted category (and optionally the masked text) is returned to the caller.
-
-## Tech Stack
-
-- **Python**
-- **Scikit-learn** (or specify your actual ML library) for model training and inference
-- **Flask** (or specify your actual framework) for the API layer
-- **Regex / NLP libraries** for PII detection
+- Text preprocessing and PII protection
+- Supervised machine-learning workflow
+- Model serialization with Joblib
+- REST API development with FastAPI
+- Separating preprocessing, inference, and serving logic
 
 ## Future Improvements
 
-- Add support for more PII types (addresses, IDs, etc.)
-- Improve classification accuracy with a larger labeled dataset
-- Add unit tests and CI/CD pipeline
-- Containerize with Docker for easier deployment
-
-## License
-
-This project is open source. Feel free to use and modify it.
-
-## Author
-
-**Sachin** — [GitHub](https://github.com/Sachinn0704)
+- Add automated tests
+- Add structured logging without exposing PII
+- Expand the training dataset and evaluation metrics
+- Add authentication and rate limiting to the API
+- Containerize the service for deployment
