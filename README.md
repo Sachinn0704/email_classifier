@@ -10,6 +10,7 @@ The project separates the workflow into PII masking, model inference, model trai
 
 - PII masking for email text
 - Machine-learning based email classification
+- Confidence score returned with each prediction
 - Model training pipeline
 - FastAPI service for classification requests
 - JSON API responses
@@ -37,11 +38,11 @@ The project separates the workflow into PII masking, model inference, model trai
 
 ## Workflow
 
-1. Receive email text through the application/API.
+1. Receive email text through the API.
 2. Detect sensitive information using the masking module.
 3. Replace detected PII with safe placeholder values.
 4. Pass the sanitized text to the trained classifier.
-5. Return the predicted support category.
+5. Return the predicted support category and classification confidence.
 
 ## Setup
 
@@ -54,7 +55,7 @@ python -m venv venv
 Windows:
 
 ```bash
-venv\Scripts\activate
+venv\\Scripts\\activate
 ```
 
 Linux/macOS:
@@ -81,12 +82,37 @@ python train_model.py
 uvicorn app:app --reload
 ```
 
-The exact API route and request schema should be taken from `app.py` because they are defined by the implementation.
+## API Usage
+
+### `POST /classify`
+
+Request body:
+
+```json
+{
+  "input_email_body": "Please help me reset my account password."
+}
+```
+
+Example response shape:
+
+```json
+{
+  "input_email_body": "Please help me reset my account password.",
+  "list_of_masked_entities": [],
+  "masked_email": "Please help me reset my account password.",
+  "category_of_the_email": "Request",
+  "classification_confidence": 0.93
+}
+```
+
+The confidence value is produced by the classifier and is useful when downstream systems need to distinguish high-confidence predictions from cases that may require human review.
 
 ## Key Learning Outcomes
 
 - Text preprocessing and PII protection
 - Supervised machine-learning workflow
+- Confidence-aware classification
 - Model serialization with Joblib
 - REST API development with FastAPI
 - Separating preprocessing, inference, and serving logic
