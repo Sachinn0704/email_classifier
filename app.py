@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from masking import mask_pii, restore_pii
 from classification import classify_email_with_confidence
 
@@ -7,7 +7,7 @@ app = FastAPI()
 
 
 class EmailRequest(BaseModel):
-    input_email_body: str
+    input_email_body: str = Field(..., min_length=1, description="Email body to classify")
 
 
 @app.post("/classify")
