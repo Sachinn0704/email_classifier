@@ -15,6 +15,21 @@ The project separates the workflow into PII masking, model inference, model trai
 - FastAPI service for classification requests
 - JSON API responses
 
+## Privacy and Safety Notes
+
+PII masking happens before the sanitized text is passed to the classifier. The masking layer is intended to protect common identifiers such as names, email addresses, phone numbers, dates of birth, government IDs, and payment-card details.
+
+For production use, the API should be treated as a privacy-sensitive service:
+
+- Do not log raw request bodies or masked/unmasked payloads containing sensitive data.
+- Keep model artifacts and training datasets under controlled access.
+- Use HTTPS and authentication before exposing the API outside a trusted network.
+- Apply rate limiting and request-size limits at the API gateway.
+- Review masking rules whenever new PII formats are introduced.
+- Treat the classifier confidence as a routing signal, not as proof that a prediction is correct.
+
+The repository focuses on the application-level masking and classification workflow; production deployments should add operational controls appropriate to the environment and applicable privacy requirements.
+
 ## Technology Stack
 
 - Python
