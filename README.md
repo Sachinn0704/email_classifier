@@ -47,6 +47,8 @@ The repository focuses on the application-level masking and classification workf
 ├── classification.py
 ├── masking.py
 ├── train_model.py
+├── tests/
+│   └── test_classification.py
 ├── requirements.txt
 └── README.md
 ```
@@ -97,6 +99,18 @@ python train_model.py
 uvicorn app:app --reload
 ```
 
+## Testing
+
+The repository includes unit tests for text preprocessing, invalid input handling, missing model artifacts, and confidence-aware classification.
+
+Run the test suite with:
+
+```bash
+python -m unittest discover -s tests -p "test_*.py"
+```
+
+The tests use lightweight fakes and mocks for model inference, so classification logic can be validated without requiring trained model artifacts.
+
 ## API Usage
 
 ### `POST /classify`
@@ -131,10 +145,10 @@ The confidence value is produced by the classifier and is useful when downstream
 - Model serialization with Joblib
 - REST API development with FastAPI
 - Separating preprocessing, inference, and serving logic
+- Unit testing with mocks and deterministic fixtures
 
 ## Future Improvements
 
-- Add automated tests
 - Add structured logging without exposing PII
 - Expand the training dataset and evaluation metrics
 - Add authentication and rate limiting to the API
