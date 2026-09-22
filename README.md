@@ -137,6 +137,18 @@ Example response shape:
 
 The confidence value is produced by the classifier and is useful when downstream systems need to distinguish high-confidence predictions from cases that may require human review.
 
+### Quick API check with cURL
+
+After starting the API locally, the endpoint can be exercised without a separate client:
+
+```bash
+curl -X POST "http://127.0.0.1:8000/classify" \
+  -H "Content-Type: application/json" \
+  -d '{"input_email_body":"Please reset my account password."}'
+```
+
+For privacy testing, use synthetic addresses, phone numbers, IDs, and other placeholder data rather than real personal information.
+
 ## Key Learning Outcomes
 
 - Text preprocessing and PII protection
