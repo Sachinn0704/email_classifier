@@ -18,6 +18,11 @@ class FakeModel:
         return [[0.15, 0.85]]
 
 
+class PredictionOnlyModel:
+    def predict(self, X):
+        return ["request"]
+
+
 class ClassificationTests(unittest.TestCase):
     def setUp(self):
         classification._MODEL = FakeModel()
@@ -45,6 +50,12 @@ class ClassificationTests(unittest.TestCase):
         label, confidence = classification.classify_email_with_confidence("Need help")
         self.assertEqual(label, "support")
         self.assertAlmostEqual(confidence, 0.85)
+
+    def test_confidence_is_optional_for_prediction_only_models(self):
+        classification._MODEL = PredictionOnlyModel()
+        label, confidence = classification.classify_email_with_confidence("Please update my access")
+        self.assertEqual(label, "request")
+        self.assertIsNone(confidence)
 
     @patch.object(classification.Path, "exists", return_value=False)
     def test_missing_artifacts_raise_clear_error(self, _exists):
